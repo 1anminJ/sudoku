@@ -118,8 +118,8 @@
     color: #9b72e8; transition: all 0.15s;
     display: flex; align-items: center; justify-content: center;
   }
-  .num-btn:hover, .num-btn:active { background: #9b72e8; color: white; border-color: #9b72e8; }
-  .num-btn.done { background: #faf8ff; color: #ddd6fe; border-color: #f3f0ff; cursor: not-allowed; pointer-events: none; }
+  .num-btn:hover, .num-btn:active { color: #6d28d9; background: none; }
+  .num-btn.done { color: #ddd6fe; cursor: not-allowed; pointer-events: none; }
 
   @media (max-width: 520px) {
     td { width: 38px; height: 38px; font-size: 1rem; }
@@ -189,15 +189,15 @@
 </div>
 
 <div class="numpad" id="numpad">
-  <button class="num-btn" onclick="inputNum(1)">1</button>
-  <button class="num-btn" onclick="inputNum(2)">2</button>
-  <button class="num-btn" onclick="inputNum(3)">3</button>
-  <button class="num-btn" onclick="inputNum(4)">4</button>
-  <button class="num-btn" onclick="inputNum(5)">5</button>
-  <button class="num-btn" onclick="inputNum(6)">6</button>
-  <button class="num-btn" onclick="inputNum(7)">7</button>
-  <button class="num-btn" onclick="inputNum(8)">8</button>
-  <button class="num-btn" onclick="inputNum(9)">9</button>
+  <span class="num-btn" onclick="inputNum(1)">1</span>
+  <span class="num-btn" onclick="inputNum(2)">2</span>
+  <span class="num-btn" onclick="inputNum(3)">3</span>
+  <span class="num-btn" onclick="inputNum(4)">4</span>
+  <span class="num-btn" onclick="inputNum(5)">5</span>
+  <span class="num-btn" onclick="inputNum(6)">6</span>
+  <span class="num-btn" onclick="inputNum(7)">7</span>
+  <span class="num-btn" onclick="inputNum(8)">8</span>
+  <span class="num-btn" onclick="inputNum(9)">9</span>
 </div>
 
 <div class="overlay" id="overlay">
@@ -396,8 +396,8 @@ function updateErrors(){document.getElementById('errCount').textContent=errors;}
 function updateNumpad(){
   for(let n=1;n<=9;n++){
     const cnt=userGrid.flat().filter(v=>v===n).length;
-    const btn=document.querySelector(`.num-btn[onclick="inputNum(${n})"]`);
-    if(btn) btn.classList.toggle('done',cnt>=9);
+    const btns=document.querySelectorAll(`.num-btn`);
+    btns.forEach(btn=>{ if(btn.textContent==n) btn.classList.toggle('done', cnt>=9); });
   }
 }
 function updateTimer(){

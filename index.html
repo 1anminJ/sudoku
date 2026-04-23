@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스도쿠</title>
+<style>
+  @font-face {
+    font-family: 'Binggrae';
+    src: url('Binggrae.ttf') format('truetype');
+    font-weight: normal;
+  }
+  @font-face {
+    font-family: 'Binggrae';
+    src: url('Binggrae-Bold.ttf') format('truetype');
+    font-weight: bold;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Binggrae', sans-serif;
+    background: #f5f3ff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    color: #2d2150;
+  }
+  h1 { font-size: 1.8rem; font-weight: bold; font-family: 'Binggrae'; margin-bottom: 4px; color: #8b5cf6; letter-spacing: 2px; }
+  .subtitle { font-size: 0.85rem; color: #b39ddb; margin-bottom: 16px; }
+
+  .top-bar {
+    display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; justify-content: center;
+  }
+  .diff-btn {
+    padding: 6px 18px; border-radius: 20px; border: 2px solid #ddd6fe;
+    background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #9b72e8;
+    transition: all 0.2s;
+  }
+  .diff-btn.active { background: #9b72e8; border-color: #9b72e8; color: white; }
+  .diff-btn:hover:not(.active) { border-color: #9b72e8; background: #f8f5ff; }
+
+  .info-bar {
+    display: flex; gap: 24px; align-items: center; margin-bottom: 14px;
+    background: white; padding: 10px 24px; border-radius: 30px;
+    box-shadow: 0 2px 12px rgba(109,40,217,0.1);
+  }
+  .info-item { display: flex; flex-direction: column; align-items: center; }
+  .info-label { font-size: 0.7rem; color: #a78bfa; text-transform: uppercase; letter-spacing: 1px; }
+  .info-value { font-size: 1.1rem; font-weight: 700; color: #2d2150; }
+  .timer-row { flex-direction: row; gap: 8px; align-items: center; }
+  .hint-dots { display: flex; gap: 4px; margin-top: 2px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #e9d5ff; }
+  .dot.active { background: #a855f7; }
+
+  .pause-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #ede9fe; border: 2px solid #c4b5fd;
+    cursor: pointer; font-size: 0.95rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .pause-btn:hover { background: #9b72e8; border-color: #9b72e8; }
+
+  table {
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 24px rgba(109,40,217,0.1);
+    transition: filter 0.2s;
+  }
+  td {
+    width: 52px; height: 52px;
+    text-align: center; vertical-align: middle;
+    font-size: 1.3rem; font-weight: 700;
+    border: 1px solid #ede9fe;
+    cursor: pointer; user-select: none;
+    transition: background 0.12s;
+    color: #1e1b4b;
+  }
+  td:hover:not(.given) { background: #f3f0ff; }
+  td.given { color: #1e1b4b; cursor: default; }
+  td.user-input { color: #7c3aed; }
+  td.selected { background: #ddd6fe !important; }
+  td.highlight { background: #f3f0ff; }
+  td.error { color: #dc2626 !important; }
+  td.hint-cell { color: #059669 !important; }
+  td.same-num { background: #ede9fe; }
+
+  td:nth-child(3n) { border-right: 2.5px solid #a78bfa; }
+  td:nth-child(3n+1) { border-left: 2.5px solid #a78bfa; }
+  tr:nth-child(3n) td { border-bottom: 2.5px solid #a78bfa; }
+  tr:nth-child(3n+1) td { border-top: 2.5px solid #a78bfa; }
+
+  .btn-row {
+    display: flex; gap: 10px; margin-top: 16px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 22px; border-radius: 20px; border: none;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-hint { background: #c084fc; color: white; }
+  .btn-hint:hover { background: #a855f7; }
+  .btn-hint:disabled { background: #f3f0ff; color: #ddd6fe; cursor: not-allowed; }
+  .btn-new { background: #9b72e8; color: white; }
+  .btn-new:hover { background: #8b5cf6; }
+  .btn-erase { background: #e4ddfa; color: #7c5cbf; }
+  .btn-erase:hover { background: #d4c9f5; }
+
+  .numpad {
+    display: none;
+    margin-top: 14px;
+    gap: 6px;
+    justify-content: center;
+  }
+  .num-btn {
+    width: 44px; height: 44px; border-radius: 10px; border: 2px solid #ddd6fe;
+    background: white;     font-size: 1.2rem; font-weight: bold; font-family: 'Binggrae'; cursor: pointer;
+    color: #9b72e8; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .num-btn:hover, .num-btn:active { background: #9b72e8; color: white; border-color: #9b72e8; }
+  .num-btn.done { background: #faf8ff; color: #ddd6fe; border-color: #f3f0ff; cursor: not-allowed; pointer-events: none; }
+
+  @media (max-width: 520px) {
+    td { width: 38px; height: 38px; font-size: 1rem; }
+    .numpad { display: flex; }
+    h1 { font-size: 1.4rem; }
+  }
+  @media (max-width: 360px) {
+    td { width: 33px; height: 33px; font-size: 0.9rem; }
+    .num-btn { width: 36px; height: 36px; font-size: 1rem; }
+  }
+
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(45,33,80,0.5); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: white; border-radius: 24px; padding: 40px 48px;
+    text-align: center; box-shadow: 0 20px 60px rgba(109,40,217,0.25);
+    animation: pop 0.3s ease;
+  }
+  @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal h2 { font-size: 2rem; margin-bottom: 8px; }
+  .modal p { color: #9f7aea; margin-bottom: 12px; font-size: 1rem; }
+  .modal .time-display { font-size: 2.5rem; font-weight: 800; color: #7c3aed; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<h1>스도쿠</h1>
+<p class="subtitle">집중력을 깨워보세요 ✨</p>
+
+<div class="top-bar">
+  <button class="diff-btn active" onclick="setDiff('easy',this)">쉬움</button>
+  <button class="diff-btn" onclick="setDiff('medium',this)">보통</button>
+  <button class="diff-btn" onclick="setDiff('hard',this)">어려움</button>
+</div>
+
+<div class="info-bar">
+  <div class="info-item timer-row">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <span class="info-label">타이머</span>
+      <span class="info-value" id="timer">00:00</span>
+    </div>
+    <button class="pause-btn" id="pauseBtn" onclick="togglePause()" title="일시정지">⏸</button>
+  </div>
+  <div class="info-item">
+    <span class="info-label">힌트</span>
+    <div class="hint-dots">
+      <div class="dot active" id="d0"></div>
+      <div class="dot active" id="d1"></div>
+      <div class="dot active" id="d2"></div>
+    </div>
+  </div>
+  <div class="info-item">
+    <span class="info-label">오류</span>
+    <span class="info-value" id="errCount">0</span>
+  </div>
+</div>
+
+<table id="board"></table>
+
+<div class="btn-row">
+  <button class="btn btn-erase" onclick="eraseCell()">지우기</button>
+  <button class="btn btn-hint" id="hintBtn" onclick="useHint()">💡 힌트</button>
+  <button class="btn btn-new" onclick="newGame()">새 게임</button>
+</div>
+
+<div class="numpad" id="numpad">
+  <button class="num-btn" onclick="inputNum(1)">1</button>
+  <button class="num-btn" onclick="inputNum(2)">2</button>
+  <button class="num-btn" onclick="inputNum(3)">3</button>
+  <button class="num-btn" onclick="inputNum(4)">4</button>
+  <button class="num-btn" onclick="inputNum(5)">5</button>
+  <button class="num-btn" onclick="inputNum(6)">6</button>
+  <button class="num-btn" onclick="inputNum(7)">7</button>
+  <button class="num-btn" onclick="inputNum(8)">8</button>
+  <button class="num-btn" onclick="inputNum(9)">9</button>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>🎉 완성!</h2>
+    <p>스도쿠를 완료했습니다!</p>
+    <div class="time-display" id="finalTime">00:00</div>
+    <button class="btn btn-new" onclick="newGame(); closeOverlay()">새 게임 시작</button>
+  </div>
+</div>
+
+<script>
+let solution=[], puzzle=[], userGrid=[], given=[];
+let selected=null, hintsLeft=3, errors=0;
+let timerInterval=null, seconds=0, gameActive=false, paused=false;
+let difficulty='easy';
+
+const REMOVE={easy:36,medium:46,hard:55};
+
+function generateFull(){const g=Array.from({length:9},()=>Array(9).fill(0));fillGrid(g);return g;}
+function fillGrid(g){
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++){
+    if(g[r][c]===0){
+      const nums=shuffle([1,2,3,4,5,6,7,8,9]);
+      for(let n of nums){if(valid(g,r,c,n)){g[r][c]=n;if(fillGrid(g))return true;g[r][c]=0;}}
+      return false;
+    }
+  }
+  return true;
+}
+function valid(g,r,c,n){
+  for(let i=0;i<9;i++){if(g[r][i]===n||g[i][c]===n)return false;}
+  const br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++)if(g[br+i][bc+j]===n)return false;
+  return true;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function makePuzzle(sol){
+  const p=sol.map(r=>[...r]);let rem=REMOVE[difficulty];
+  const cells=shuffle([...Array(81).keys()]);
+  for(let idx of cells){if(rem<=0)break;const r=Math.floor(idx/9),c=idx%9;p[r][c]=0;rem--;}
+  return p;
+}
+
+function newGame(){
+  // 일시정지 상태 완전 초기화
+  paused=false;
+  document.getElementById('board').style.filter='none';
+  document.getElementById('pauseBtn').textContent='⏸';
+
+  solution=generateFull();
+  puzzle=makePuzzle(solution);
+  userGrid=puzzle.map(r=>[...r]);
+  given=puzzle.map(r=>r.map(v=>v!==0));
+  selected=null; hintsLeft=3; errors=0;
+  gameActive=true;
+
+  clearInterval(timerInterval); seconds=0;
+  updateTimer();
+  timerInterval=setInterval(()=>{seconds++;updateTimer();},1000);
+
+  document.getElementById('hintBtn').disabled=false;
+  updateHintDots(); updateErrors(); updateNumpad();
+  renderBoard();
+}
+
+function setDiff(d,el){
+  difficulty=d;
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  newGame();
+}
+
+function renderBoard(){
+  const tbl=document.getElementById('board');
+  tbl.innerHTML='';
+  for(let r=0;r<9;r++){
+    const tr=document.createElement('tr');
+    for(let c=0;c<9;c++){
+      const td=document.createElement('td');
+      const v=userGrid[r][c];
+      if(v) td.textContent=v;
+      if(given[r][c]) td.classList.add('given');
+      td.dataset.r=r; td.dataset.c=c;
+      td.addEventListener('click',()=>selectCell(r,c));
+      tr.appendChild(td);
+    }
+    tbl.appendChild(tr);
+  }
+  refreshHighlights();
+}
+
+function selectCell(r,c){
+  if(paused) return;
+  selected={r,c};
+  refreshHighlights();
+}
+
+function refreshHighlights(){
+  const cells=document.querySelectorAll('td');
+  cells.forEach(td=>{
+    const r=+td.dataset.r,c=+td.dataset.c;
+    td.classList.remove('selected','highlight','error','hint-cell','same-num','user-input');
+    const v=userGrid[r][c];
+    if(v&&!given[r][c]&&!td.dataset.hint) td.classList.add('user-input');
+    if(v&&!given[r][c]&&v!==solution[r][c]) td.classList.add('error');
+    if(td.dataset.hint) td.classList.add('hint-cell');
+  });
+  if(!selected) return;
+  const {r,c}=selected;
+  const selVal=userGrid[r][c];
+  cells.forEach(td=>{
+    const tr2=+td.dataset.r,tc2=+td.dataset.c;
+    if(tr2===r||tc2===c||(Math.floor(tr2/3)===Math.floor(r/3)&&Math.floor(tc2/3)===Math.floor(c/3)))
+      td.classList.add('highlight');
+    if(selVal&&userGrid[tr2][tc2]===selVal) td.classList.add('same-num');
+    if(tr2===r&&tc2===c){td.classList.remove('highlight','same-num');td.classList.add('selected');}
+  });
+}
+
+function inputNum(n){
+  if(!selected||!gameActive||paused) return;
+  const {r,c}=selected;
+  if(given[r][c]) return;
+  userGrid[r][c]=n;
+  const td=document.querySelector(`td[data-r="${r}"][data-c="${c}"]`);
+  delete td.dataset.hint;
+  if(n!==solution[r][c]){errors++;updateErrors();}
+  td.textContent=n;
+  refreshHighlights();
+  updateNumpad();
+  checkWin();
+}
+
+function eraseCell(){
+  if(!selected||!gameActive||paused) return;
+  const {r,c}=selected;
+  if(given[r][c]) return;
+  userGrid[r][c]=0;
+  const td=document.querySelector(`td[data-r="${r}"][data-c="${c}"]`);
+  td.textContent='';
+  delete td.dataset.hint;
+  refreshHighlights();
+  updateNumpad();
+}
+
+document.addEventListener('keydown',e=>{
+  if(!gameActive||paused) return;
+  if(e.key>='1'&&e.key<='9') inputNum(+e.key);
+  if(e.key==='Delete'||e.key==='Backspace') eraseCell();
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
+    if(!selected){selected={r:0,c:0};}
+    else{
+      let{r,c}=selected;
+      if(e.key==='ArrowUp') r=Math.max(0,r-1);
+      if(e.key==='ArrowDown') r=Math.min(8,r+1);
+      if(e.key==='ArrowLeft') c=Math.max(0,c-1);
+      if(e.key==='ArrowRight') c=Math.min(8,c+1);
+      selected={r,c};
+    }
+    refreshHighlights();
+    e.preventDefault();
+  }
+});
+
+function useHint(){
+  if(hintsLeft<=0||!selected||!gameActive||paused) return;
+  const {r,c}=selected;
+  if(given[r][c]||userGrid[r][c]===solution[r][c]) return;
+  userGrid[r][c]=solution[r][c];
+  hintsLeft--;
+  const td=document.querySelector(`td[data-r="${r}"][data-c="${c}"]`);
+  td.textContent=solution[r][c];
+  td.dataset.hint='1';
+  updateHintDots();
+  refreshHighlights();
+  updateNumpad();
+  checkWin();
+  if(hintsLeft===0) document.getElementById('hintBtn').disabled=true;
+}
+
+function togglePause(){
+  if(!gameActive) return;
+  paused=!paused;
+  document.getElementById('pauseBtn').textContent=paused?'▶':'⏸';
+  document.getElementById('board').style.filter=paused?'blur(6px)':'none';
+  document.getElementById('board').style.pointerEvents=paused?'none':'';
+  if(paused){clearInterval(timerInterval);}
+  else{timerInterval=setInterval(()=>{seconds++;updateTimer();},1000);}
+}
+
+function updateHintDots(){
+  for(let i=0;i<3;i++) document.getElementById('d'+i).classList.toggle('active',i<hintsLeft);
+}
+function updateErrors(){document.getElementById('errCount').textContent=errors;}
+function updateNumpad(){
+  for(let n=1;n<=9;n++){
+    const cnt=userGrid.flat().filter(v=>v===n).length;
+    const btn=document.querySelector(`.num-btn[onclick="inputNum(${n})"]`);
+    if(btn) btn.classList.toggle('done',cnt>=9);
+  }
+}
+function updateTimer(){
+  const m=Math.floor(seconds/60).toString().padStart(2,'0');
+  const s=(seconds%60).toString().padStart(2,'0');
+  document.getElementById('timer').textContent=`${m}:${s}`;
+}
+function checkWin(){
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++)if(userGrid[r][c]!==solution[r][c])return;
+  clearInterval(timerInterval);
+  gameActive=false;
+  const m=Math.floor(seconds/60).toString().padStart(2,'0');
+  const s=(seconds%60).toString().padStart(2,'0');
+  document.getElementById('finalTime').textContent=`${m}:${s}`;
+  setTimeout(()=>document.getElementById('overlay').classList.add('show'),400);
+}
+function closeOverlay(){document.getElementById('overlay').classList.remove('show');}
+
+newGame();
+</script>
+</body>
+</html>

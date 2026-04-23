@@ -35,6 +35,7 @@
   .diff-btn {
     padding: 6px 18px; border-radius: 20px; border: 2px solid #ddd6fe;
     background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #9b72e8;
+    font-family: 'Binggrae', sans-serif;
     transition: all 0.2s;
   }
   .diff-btn.active { background: #9b72e8; border-color: #9b72e8; color: white; }
@@ -97,6 +98,7 @@
   .btn {
     padding: 9px 22px; border-radius: 20px; border: none;
     font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    font-family: 'Binggrae', sans-serif;
   }
   .btn-hint { background: #c084fc; color: white; }
   .btn-hint:hover { background: #a855f7; }
@@ -127,13 +129,20 @@
   .num-btn.done { color: #ddd6fe; cursor: not-allowed; pointer-events: none; }
 
   @media (max-width: 520px) {
+    html, body { overflow: hidden; }
+    body { padding: 8px 6px; justify-content: center; gap: 0; }
+    h1 { font-size: 1.4rem; margin-bottom: 2px; }
+    .subtitle { font-size: 0.78rem; margin-bottom: 6px; }
+    .top-bar { margin-bottom: 6px; }
+    .info-bar { margin-bottom: 6px; padding: 6px 14px; gap: 16px; }
     td { width: 38px; height: 38px; font-size: 1rem; }
-    .numpad { display: flex; }
-    h1 { font-size: 1.4rem; }
+    .btn-row { margin-top: 8px; }
+    .numpad { display: flex; margin-top: 6px; }
   }
   @media (max-width: 360px) {
     td { width: 33px; height: 33px; font-size: 0.9rem; }
     .num-btn { height: 36px; font-size: 1rem; }
+    .info-bar { gap: 12px; padding: 5px 10px; }
   }
 
   .overlay {

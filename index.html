@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>스도쿠</title>
 <style>
   @font-face {
@@ -164,7 +164,7 @@
       <span class="info-label">타이머</span>
       <span class="info-value" id="timer">00:00</span>
     </div>
-    <button class="pause-btn" id="pauseBtn" onclick="togglePause()" title="일시정지">⏸</button>
+    <button class="pause-btn" id="pauseBtn" onclick="togglePause()" title="일시정지">&#9646;&#9646;</button>
   </div>
   <div class="info-item">
     <span class="info-label">힌트</span>
@@ -246,7 +246,7 @@ function newGame(){
   // 일시정지 상태 완전 초기화
   paused=false;
   document.getElementById('board').style.filter='none';
-  document.getElementById('pauseBtn').textContent='⏸';
+  document.getElementById('pauseBtn').innerHTML = '&#9646;&#9646;';
 
   solution=generateFull();
   puzzle=makePuzzle(solution);

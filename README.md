@@ -1,39 +1,49 @@
-# 🧩 스도쿠
+<div align="center">
 
-심심할 때 즐기려고 직접 만든 스도쿠 게임이에요.  
-바로 플레이 → **[여기 클릭](https://유저명.github.io/레포명)**
+<br/>
 
-<br>
+# 스도쿠
 
-## 🎮 기능
+**집중력을 깨워보세요 ✨**
 
-- **난이도 3단계** — 쉬움 / 보통 / 어려움
-- **힌트** — 한 판에 최대 3번, 아껴서 쓰세요
-- **타이머** — 얼마나 걸렸는지 기록, 일시정지도 가능
-- **오류 카운터** — 틀릴 때마다 카운트
-- **숫자 자동 비활성화** — 9칸이 다 채워진 숫자는 흐리게 표시
+<br/>
 
-<br>
+[![Play Now](https://img.shields.io/badge/▶%20%20지금%20플레이하기-7c3aed?style=for-the-badge&logoColor=white)](https://1anminj.github.io/sudoku/)
 
-## 🕹️ 조작 방법
+<br/>
 
-| 환경 | 조작 |
-|------|------|
-| 데스크탑 | 셀 클릭 후 키보드 숫자 입력, 방향키로 이동, Delete로 지우기 |
-| 모바일 | 셀 터치 후 하단 숫자 패드 사용 |
+![HTML](https://img.shields.io/badge/HTML-ede9fe?style=flat-square&logoColor=7c3aed&color=ede9fe&labelColor=ddd6fe)
+![CSS](https://img.shields.io/badge/CSS-ede9fe?style=flat-square&color=ede9fe&labelColor=ddd6fe)
+![JavaScript](https://img.shields.io/badge/JavaScript-ede9fe?style=flat-square&color=ede9fe&labelColor=ddd6fe)
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-ede9fe?style=flat-square&color=ede9fe&labelColor=ddd6fe)
 
-<br>
+<br/>
 
-## 🛠️ 사용 기술
+<!-- 아래 경로에 캡처 이미지를 넣어주세요 -->
+<img src="sudoku-play-screen.png" alt="스도쿠 플레이 화면" width="320" style="border-radius: 16px;" />
 
-- HTML / CSS / JavaScript (라이브러리 없음!)
-- 빙그래 폰트
+<br/><br/>
 
-<br>
+</div>
 
-## 📦 로컬 실행
+---
 
-```bash
-git clone https://github.com/유저명/레포명.git
-```
-폰트 파일(`Binggrae.ttf`, `Binggrae-Bold.ttf`)을 같은 폴더에 두고 `index.html`을 열면 돼요.
+## 기능
+
+|  | 설명 |
+|--|------|
+| 🎯 **난이도 3단계** | 쉬움 / 보통 / 어려움 |
+| ⏱ **타이머** | 일시정지 / 재개 지원 |
+| 💡 **힌트** | 게임당 최대 3회 |
+| ❌ **오류 카운터** | 틀린 입력 횟수 표시 |
+| 🔵 **셀 하이라이트** | 행·열·박스 및 같은 숫자 강조 |
+| ⌨️ **키보드 지원** | 숫자 키, 방향키, Delete/Backspace |
+| 📱 **모바일 최적화** | 터치 숫자패드 및 반응형 레이아웃 |
+
+---
+
+## 기술 스택
+
+- **HTML / CSS / JavaScript** — 외부 라이브러리 없는 순수 바닐라
+- **빙그레 폰트** — 한국어 폰트 직접 임베드
+- **GitHub Pages** — 정적 배포

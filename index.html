@@ -109,12 +109,17 @@
   .numpad {
     display: none;
     margin-top: 14px;
-    gap: 6px;
+    gap: 4px;
     justify-content: center;
+    width: 100%;
+    padding: 0 6px;
   }
   .num-btn {
-    width: 44px; height: 44px; border-radius: 10px; border: 2px solid #ddd6fe;
-    background: white;     font-size: 1.2rem; font-weight: bold; font-family: 'Binggrae'; cursor: pointer;
+    flex: 1;
+    max-width: 44px;
+    min-width: 28px;
+    height: 44px; border-radius: 10px; border: 2px solid #ddd6fe;
+    background: white; font-size: 1.2rem; font-weight: bold; font-family: 'Binggrae'; cursor: pointer;
     color: #9b72e8; transition: all 0.15s;
     display: flex; align-items: center; justify-content: center;
   }
@@ -128,7 +133,7 @@
   }
   @media (max-width: 360px) {
     td { width: 33px; height: 33px; font-size: 0.9rem; }
-    .num-btn { width: 36px; height: 36px; font-size: 1rem; }
+    .num-btn { height: 36px; font-size: 1rem; }
   }
 
   .overlay {
@@ -164,7 +169,7 @@
       <span class="info-label">타이머</span>
       <span class="info-value" id="timer">00:00</span>
     </div>
-    <button class="pause-btn" id="pauseBtn" onclick="togglePause()" title="일시정지">&#9646;&#9646;</button>
+    <button class="pause-btn" id="pauseBtn" onclick="togglePause()" title="일시정지">⏸&#xFE0E;</button>
   </div>
   <div class="info-item">
     <span class="info-label">힌트</span>
@@ -246,7 +251,7 @@ function newGame(){
   // 일시정지 상태 완전 초기화
   paused=false;
   document.getElementById('board').style.filter='none';
-  document.getElementById('pauseBtn').innerHTML = '&#9646;&#9646;';
+  document.getElementById('pauseBtn').textContent = '⏸\uFE0E';
 
   solution=generateFull();
   puzzle=makePuzzle(solution);
@@ -382,7 +387,7 @@ function useHint(){
 function togglePause(){
   if(!gameActive) return;
   paused=!paused;
-  document.getElementById('pauseBtn').textContent=paused?'▶':'⏸';
+  document.getElementById('pauseBtn').textContent=paused?'▶\uFE0E':'⏸\uFE0E';
   document.getElementById('board').style.filter=paused?'blur(6px)':'none';
   document.getElementById('board').style.pointerEvents=paused?'none':'';
   if(paused){clearInterval(timerInterval);}
